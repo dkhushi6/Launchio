@@ -1,0 +1,56 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+out/
+.next/
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+
+# Local environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+*.log.*
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Sandbox / temp files
+sandbox/
+tmp/
+temp/
+
+# Coverage reports
+coverage/
+
+# Lockfiles (if you switch package managers)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+/src/generated/prisma
