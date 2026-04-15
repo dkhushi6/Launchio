@@ -2,7 +2,7 @@ import { ObjectId } from "bson";
 import path from "path";
 import { UploadFiles } from "./aws/upload";
 import { WebSocket } from "ws";
-import { deployDockerContainer } from "./aws/docker/docker-deploy";
+import { deployDockerContainer } from "./docker/docker-deploy";
 
 type startDeploymentPropTypes = {
   ws: WebSocket;
@@ -21,9 +21,9 @@ export const startDeployment = async ({
   let app_id;
   try {
     if (token) {
-      deployDockerContainer({ ws, clone_url, token });
+      await deployDockerContainer({ ws, clone_url, token });
     } else {
-      deployDockerContainer({ ws, clone_url });
+      await deployDockerContainer({ ws, clone_url });
     }
     ws.send(JSON.stringify({ type: "stage", value: "build_done" }));
 

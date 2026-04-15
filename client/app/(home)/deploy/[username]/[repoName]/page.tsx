@@ -44,28 +44,6 @@ const page = () => {
     fetchRepo();
   }, [username, session, repoName]);
 
-  const getDeployment = async ({ clone_url }: { clone_url: string }) => {
-    try {
-      if (username === currUsername) {
-        const res = await axios.post("http://localhost:8080/deploy", {
-          clone_url,
-          token: session?.user.accessToken,
-        });
-        if (res.data.url) setDeployUrl(res.data.url);
-      } else {
-        const res = await axios.post("http://localhost:8080/deploy", {
-          clone_url,
-        });
-        if (res.data.url) setDeployUrl(res.data.url);
-      }
-
-      setDeployMode(false);
-    } catch (err) {
-      console.error("error handling deployment", err);
-      setDeployMode(false);
-    }
-  };
-
   const startDeployment = async () => {
     setDeployMode(true);
     setLogs([

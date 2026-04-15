@@ -4,7 +4,6 @@ import { WebSocketServer } from "ws";
 
 import { createServer } from "node:http";
 import getReposRoutes from "./routes/get-repos";
-import getDeploymentRoutes from "./routes/get-deployment";
 import cors from "cors";
 import { startDeployment } from "../lib/start-deployment";
 const app = express();
@@ -50,7 +49,6 @@ app.use(
   }),
 );
 app.use("/api", getReposRoutes);
-app.use("/deploy", getDeploymentRoutes);
 server.listen(PORT, () => {
   console.log(`🚀Vercel-Clone server running at http://localhost:${PORT}`);
 });
