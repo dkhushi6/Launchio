@@ -7,10 +7,10 @@ import getReposRoutes from "./routes/get-repos";
 import cors from "cors";
 import { startDeployment } from "../lib/start-deployment";
 const app = express();
-
+dotenv.config();
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
-const PORT = 8080;
+const PORT = process.env.PORT;
 console.log("hloo");
 dotenv.config();
 wss.on("connection", (ws) => {
