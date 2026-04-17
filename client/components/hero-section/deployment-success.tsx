@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Card } from "../ui/card";
 import { Check, Copy, ExternalLink, Globe } from "lucide-react";
 import { Button } from "../ui/button";
-import { handleCopy } from "../functions/handleCopy";
+import { handleCopy } from "../../app/functions/handleCopy";
 
 const DeploymentSuccess = ({ deployUrl }: { deployUrl: string }) => {
   const [copied, setCopied] = useState(false);

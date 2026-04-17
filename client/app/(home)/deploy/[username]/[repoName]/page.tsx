@@ -9,6 +9,8 @@ import { Repo } from "../../../my-repos/page";
 import DeploymentSuccess from "@/components/hero-section/deployment-success";
 import BuildLogs from "@/components/hero-section/build-logs";
 import UserRepoCard from "@/components/hero-section/user-repo-card";
+import { fetchUserRepo } from "@/app/functions/fetch-user-repo";
+import { startDeployment } from "@/app/functions/start-deployment";
 
 const page = () => {
   const { data: session } = useSession();
@@ -16,78 +18,75 @@ const page = () => {
   const [deployMode, setDeployMode] = useState(false);
   const [deployUrl, setDeployUrl] = useState("");
   const [logs, setLogs] = useState<string[]>([]);
-  const [ws, setWs] = useState<WebSocket | null>(null);
   const { username, repoName } = useParams();
   const currUsername = session?.user?.username;
 
   useEffect(() => {
     const token = session?.user?.accessToken;
-    const fetchRepo = async () => {
-      if (username === currUsername) {
-        const res = await axios.post("http://localhost:8080/api/get-repo", {
-          username,
-          repoName,
-          token,
-        });
-        setRepo(res.data.repo);
-      } else {
-        const res = await axios.post(
-          "http://localhost:8080/api/get-public-repo",
-          {
-            username,
-            repoName,
-          },
-        );
-        setRepo(res.data.repo);
-      }
-    };
-    fetchRepo();
-  }, [username, session, repoName]);
 
-  const startDeployment = async () => {
-    setDeployMode(true);
-    setLogs([
-      "$ initializing deployment...",
-      "$ cloning repository...",
-      "$ installing dependencies...",
-      "$ running build...",
-    ]);
-    const socket = new WebSocket("ws://localhost:8080");
-    setWs(socket);
+    if (!username || !repoName || !currUsername) return;
+    if (token) {
+      fetchUserRepo({
+        username: username as string,
+        currUsername,
+        repoName: repoName as string,
+        token,
+        setRepo,
+      });
+    } else {
+      fetchUserRepo({
+        username: username as string,
+        currUsername,
+        repoName: repoName as string,
+        token,
+        setRepo,
+      });
+    }
+  }, [username, repoName, currUsername, session]);
 
-    socket.onopen = () => {
-      console.log("socket connected");
+  // const startDeployment = async () => {
+  //   setDeployMode(true);
+  //   setLogs([
+  //     "$ initializing deployment...",
+  //     "$ cloning repository...",
+  //     "$ installing dependencies...",
+  //     "$ running build...",
+  //   ]);
+  //   const socket = new WebSocket("ws://localhost:8080");
 
-      socket.send(
-        JSON.stringify({
-          type: "start",
-          clone_url: repo!.clone_url,
-          token:
-            username === currUsername ? session?.user.accessToken : undefined,
-        }),
-      );
-    };
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+  //   socket.onopen = () => {
+  //     console.log("socket connected");
 
-      if (data.type === "log") {
-        setLogs((prev) => [...prev, data.message]);
-      }
+  //     socket.send(
+  //       JSON.stringify({
+  //         type: "start",
+  //         clone_url: repo!.clone_url,
+  //         token:
+  //           username === currUsername ? session?.user.accessToken : undefined,
+  //       }),
+  //     );
+  //   };
+  //   socket.onmessage = (event) => {
+  //     const data = JSON.parse(event.data);
 
-      if (data.type === "error") {
-        setLogs((prev) => [...prev, `ERROR: ${data.message}`]);
-      }
+  //     if (data.type === "log") {
+  //       setLogs((prev) => [...prev, data.message]);
+  //     }
 
-      if (data.type === "hosted_url") {
-        setDeployUrl(data.url);
-        setDeployMode(false);
-      }
-    };
+  //     if (data.type === "error") {
+  //       setLogs((prev) => [...prev, `ERROR: ${data.message}`]);
+  //     }
 
-    socket.onclose = () => {
-      console.log("socket closed");
-    };
-  };
+  //     if (data.type === "hosted_url") {
+  //       setDeployUrl(data.url);
+  //       setDeployMode(false);
+  //     }
+  //   };
+
+  //   socket.onclose = () => {
+  //     console.log("socket closed");
+  //   };
+  // };
 
   if (!repo) {
     return (
@@ -115,7 +114,17 @@ const page = () => {
         <Button
           size="lg"
           className="w-full"
-          onClick={startDeployment}
+          onClick={() => {
+            startDeployment({
+              setDeployMode,
+              setLogs,
+              setDeployUrl,
+              repo,
+              username,
+              currUsername,
+              token: session?.user.accessToken,
+            });
+          }}
           disabled={deployMode}
         >
           {deployMode ? (
