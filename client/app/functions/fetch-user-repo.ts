@@ -1,5 +1,5 @@
+import { Repo } from "@/lib/types/client-types";
 import axios from "axios";
-import { Repo } from "../(home)/my-repos/page";
 type fetchUserRepoPropTypes = {
   username: string;
   currUsername: string;

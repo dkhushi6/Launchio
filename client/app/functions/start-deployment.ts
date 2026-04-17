@@ -1,5 +1,5 @@
+import { Repo } from "@/lib/types/client-types";
 import { ParamValue } from "next/dist/server/request/params";
-import { Repo } from "../(home)/my-repos/page";
 
 type startDeploymentPropTypes = {
   setDeployMode: React.Dispatch<React.SetStateAction<boolean>>;

@@ -1,8 +1,9 @@
 "use client";
 import { Card } from "../ui/card";
 import { redirect } from "next/navigation";
-import { Repo } from "@/app/(home)/my-repos/page";
 import { useSession } from "next-auth/react";
+import { DeployPageUserPath } from "@/lib/path";
+import { Repo } from "@/lib/types/client-types";
 
 type UserRepoCardTypeProps = {
   repo: Repo;
@@ -19,7 +20,12 @@ const UserRepoCard = ({ repo }: UserRepoCardTypeProps) => {
   return (
     <Card
       onClick={async () => {
-        redirect(`/deploy/${session?.user.username}/${repo.name}`);
+        redirect(
+          DeployPageUserPath({
+            username: session?.user.username,
+            repoName: repo.name,
+          }),
+        );
       }}
       key={repo.id}
       className="p-6  hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between cursor-pointer"

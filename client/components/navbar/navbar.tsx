@@ -1,5 +1,5 @@
 "use client";
-import { HomePath, LoginPath } from "@/app/path";
+import { HomePath, LoginPath, MyReposPath } from "@/lib/path";
 import Link from "next/link";
 import { Triangle } from "lucide-react";
 import { Button, buttonVariants } from "../ui/button";
@@ -34,12 +34,6 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="flex gap-2">
-        <Link
-          href={"/my-repos"}
-          className={buttonVariants({ variant: "default" })}
-        >
-          MyRepos
-        </Link>
         <ThemeSwitcher />{" "}
         {!session?.user ? (
           <Link
@@ -51,7 +45,13 @@ const Navbar = () => {
             </div>
           </Link>
         ) : (
-          <div>
+          <div className="flex gap-2">
+            <Link
+              href={MyReposPath()}
+              className={buttonVariants({ variant: "outline" })}
+            >
+              MyRepos
+            </Link>
             <HoverCard>
               <HoverCardTrigger asChild>
                 <button className="flex items-center gap-2 cursor-pointer  ">
