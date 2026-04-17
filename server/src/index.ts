@@ -48,7 +48,10 @@ app.use(
     credentials: true,
   }),
 );
+app.get("/", (req, res) => {
+  res.send(" Backend is running successfully");
+});
 app.use("/api", getReposRoutes);
 server.listen(PORT, () => {
-  console.log(`🚀Vercel-Clone server running at http://localhost:${PORT}`);
+  console.log(`Launchio server running at http://localhost:${PORT}`);
 });
