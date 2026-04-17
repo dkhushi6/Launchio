@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DeploymentSuccess from "@/components/hero-section/deployment-success";
 import BuildLogs from "@/components/hero-section/build-logs";
@@ -19,29 +19,25 @@ const page = () => {
   const [logs, setLogs] = useState<string[]>([]);
   const { username, repoName } = useParams();
   const currUsername = session?.user?.username;
-
+  const [repoNotFound, setRepoNotFound] = useState(false);
   useEffect(() => {
-    const token = session?.user?.accessToken;
-
     if (!username || !repoName || !currUsername) return;
-    if (token) {
-      fetchUserRepo({
-        username: username as string,
-        currUsername,
-        repoName: repoName as string,
-        token,
-        setRepo,
-      });
-    } else {
-      fetchUserRepo({
-        username: username as string,
-        currUsername,
-        repoName: repoName as string,
-        token,
-        setRepo,
-      });
-    }
+
+    (async () => {
+      try {
+        const data = await fetchUserRepo({
+          username: username as string,
+          currUsername,
+          repoName: repoName as string,
+          token: session?.user?.accessToken,
+        });
+        setRepo(data);
+      } catch {
+        setRepoNotFound(true);
+      }
+    })();
   }, [username, repoName, currUsername, session]);
+  if (repoNotFound) return notFound();
 
   if (!repo) {
     return (

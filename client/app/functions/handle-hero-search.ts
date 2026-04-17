@@ -17,9 +17,12 @@ export const handleSearch = async ({
     const repoName = match[2];
     redirect(`/deploy/${username}/${repoName}`);
   } else {
-    const res = await axios.post("http://localhost:8080/api/search-repo", {
-      repoName: query,
-    });
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_HOST_URL}/api/search-repo`,
+      {
+        repoName: query,
+      },
+    );
     setRepos(res.data.results);
     console.log("repos are", res.data.results);
   }

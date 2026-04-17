@@ -26,7 +26,7 @@ export const startDeployment = async ({
     "$ installing dependencies...",
     "$ running build...",
   ]);
-  const socket = new WebSocket("ws://localhost:8080");
+  const socket = new WebSocket(`${process.env.NEXT_PUBLIC_WS_URL}`);
 
   socket.onopen = () => {
     console.log("socket connected");
@@ -59,4 +59,5 @@ export const startDeployment = async ({
   socket.onclose = () => {
     console.log("socket closed");
   };
+  return () => socket.close();
 };

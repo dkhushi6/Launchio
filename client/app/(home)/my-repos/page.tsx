@@ -1,10 +1,12 @@
 "use client";
 
+import { getUserRepos } from "@/app/functions/get-my-repos";
 import UserRepoCard from "@/components/hero-section/user-repo-card";
 import { Repo } from "@/lib/types/client-types";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import NotFound from "./not-found";
 
 const UserRepos = () => {
   const { data: session } = useSession();
@@ -15,21 +17,11 @@ const UserRepos = () => {
     const username = session?.user?.username;
 
     if (!token) return;
-
-    const getUserRepos = async () => {
-      try {
-        const res = await axios.post("http://localhost:8080/api/get-repos", {
-          username,
-          token,
-        });
-        console.log(res.data.repos);
-        setRepos(res.data.repos);
-      } catch (err) {
-        console.error("Error fetching repos:", err);
-      }
-    };
-
-    getUserRepos();
+    try {
+      getUserRepos({ username, token, setRepos });
+    } catch {
+      NotFound();
+    }
   }, [session]);
 
   return (

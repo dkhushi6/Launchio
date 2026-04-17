@@ -5,27 +5,20 @@ type fetchUserRepoPropTypes = {
   currUsername: string;
   repoName: string;
   token?: string;
-  setRepo: React.Dispatch<React.SetStateAction<Repo | null>>;
 };
 export const fetchUserRepo = async ({
   username,
   currUsername,
   repoName,
   token,
-  setRepo,
 }: fetchUserRepoPropTypes) => {
-  if (username === currUsername) {
-    const res = await axios.post("http://localhost:8080/api/get-repo", {
-      username,
-      repoName,
-      token,
-    });
-    setRepo(res.data.repo);
-  } else {
-    const res = await axios.post("http://localhost:8080/api/get-public-repo", {
-      username,
-      repoName,
-    });
-    setRepo(res.data.repo);
-  }
+  const isOwner = username === currUsername;
+
+  const res = await axios.post(
+    `${process.env.NEXT_PUBLIC_HOST_URL}${isOwner ? "/api/get-repo" : "/api/get-public-repo"}`,
+    isOwner ? { username, repoName, token } : { username, repoName },
+  );
+
+  if (!res.data.repo) throw new Error("Repo not found");
+  return res.data.repo;
 };
