@@ -29,7 +29,7 @@ const Navbar = () => {
         >
           <div className="flex gap-1 items-center ">
             <Triangle size={18} fill="black" />
-            <h1 className="font-bold tracking-tight text-lg">Vercel-Clone</h1>
+            <h1 className="font-bold tracking-tight text-lg">Lauchio</h1>
           </div>
         </Link>
       </div>

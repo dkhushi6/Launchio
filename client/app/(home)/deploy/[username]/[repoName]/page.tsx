@@ -9,7 +9,7 @@ import BuildLogs from "@/components/hero-section/build-logs";
 import UserRepoCard from "@/components/hero-section/user-repo-card";
 import { fetchUserRepo } from "@/app/functions/fetch-user-repo";
 import { startDeployment } from "@/app/functions/start-deployment";
-import { Item, Repo } from "@/lib/types/client-types";
+import { EnvVarType, Item, Repo } from "@/lib/types/client-types";
 import { fetchFolderContent } from "@/app/functions/fetch-folder-content";
 import FolderTree from "@/components/folder-tree";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ const page = () => {
   const [repo, setRepo] = useState<Repo | null>(null);
   const [deployMode, setDeployMode] = useState(false);
   const [editRootDirMode, setEditRootDirMode] = useState(false);
-  const [envVars, setEnvVars] = useState<{ key: string; value: string }[]>([]);
+  const [envVars, setEnvVars] = useState<EnvVarType[]>([]);
   const [newEnvKey, setNewEnvKey] = useState("");
   const [newEnvValue, setNewEnvValue] = useState("");
 

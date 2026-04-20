@@ -5,6 +5,7 @@ type deployContainerPropTypes = {
   ws: WebSocket;
   clone_url: string;
   rootDir: string;
+  envVars: { key: string; value: string }[];
   token?: string;
 };
 type LogMessage = {
@@ -22,11 +23,15 @@ export const deployDockerContainer = ({
   ws,
   clone_url,
   rootDir,
+  envVars,
   token,
 }: deployContainerPropTypes): Promise<void> => {
   return new Promise((resolve, reject) => {
     const outputDir = path.join(process.cwd(), "output");
-
+    const envArgs = envVars.flatMap(({ key, value }) => [
+      "-e",
+      `${key}=${value}`,
+    ]);
     const args = [
       "run",
       "--rm",
@@ -35,6 +40,7 @@ export const deployDockerContainer = ({
       "-e",
       `ROOT_DIR=${rootDir}`,
       ...(token ? ["-e", `GITHUB_TOKEN=${token}`] : []),
+      ...envArgs,
       "-v",
       `${outputDir}:/output`,
       "builder-image",

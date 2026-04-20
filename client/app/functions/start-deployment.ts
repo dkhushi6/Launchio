@@ -1,4 +1,4 @@
-import { Repo } from "@/lib/types/client-types";
+import { EnvVarType, Repo } from "@/lib/types/client-types";
 import { ParamValue } from "next/dist/server/request/params";
 
 type startDeploymentPropTypes = {
@@ -10,6 +10,7 @@ type startDeploymentPropTypes = {
   currUsername: string | undefined;
   token?: string;
   rootDir: string;
+  envVars: EnvVarType[];
 };
 export const startDeployment = async ({
   setDeployMode,
@@ -20,6 +21,7 @@ export const startDeployment = async ({
   currUsername,
   token,
   rootDir,
+  envVars,
 }: startDeploymentPropTypes) => {
   setDeployMode(true);
   setLogs([
@@ -39,6 +41,7 @@ export const startDeployment = async ({
         clone_url: repo!.clone_url,
         token: username === currUsername ? token : undefined,
         rootDir,
+        envVars,
       }),
     );
   };

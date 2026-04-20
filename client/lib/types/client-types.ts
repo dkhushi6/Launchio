@@ -23,3 +23,4 @@ export type Item = {
   name: string;
   children?: string[];
 };
+export type EnvVarType = { key: string; value: string };
