@@ -4,6 +4,7 @@ import { WebSocket } from "ws";
 type deployContainerPropTypes = {
   ws: WebSocket;
   clone_url: string;
+  rootDir: string;
   token?: string;
 };
 type LogMessage = {
@@ -20,6 +21,7 @@ type WSMessage = LogMessage | ErrorMessage;
 export const deployDockerContainer = ({
   ws,
   clone_url,
+  rootDir,
   token,
 }: deployContainerPropTypes): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -30,6 +32,8 @@ export const deployDockerContainer = ({
       "--rm",
       "-e",
       `REPO_URL=${clone_url}`,
+      "-e",
+      `ROOT_DIR=${rootDir}`,
       ...(token ? ["-e", `GITHUB_TOKEN=${token}`] : []),
       "-v",
       `${outputDir}:/output`,
@@ -57,7 +61,7 @@ export const deployDockerContainer = ({
 
       errors.forEach((err) => {
         if (!err.trim()) return;
-
+        console.error("[docker stderr]", err);
         ws.send(
           JSON.stringify({
             type: "error",

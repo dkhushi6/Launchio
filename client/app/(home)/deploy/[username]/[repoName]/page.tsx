@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Pencil, Plus, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,17 +12,24 @@ import { startDeployment } from "@/app/functions/start-deployment";
 import { Item, Repo } from "@/lib/types/client-types";
 import { fetchFolderContent } from "@/app/functions/fetch-folder-content";
 import FolderTree from "@/components/folder-tree";
+import { Input } from "@/components/ui/input";
 
 const page = () => {
   const { data: session } = useSession();
   const [repo, setRepo] = useState<Repo | null>(null);
   const [deployMode, setDeployMode] = useState(false);
+  const [editRootDirMode, setEditRootDirMode] = useState(false);
+  const [envVars, setEnvVars] = useState<{ key: string; value: string }[]>([]);
+  const [newEnvKey, setNewEnvKey] = useState("");
+  const [newEnvValue, setNewEnvValue] = useState("");
+
   const [deployUrl, setDeployUrl] = useState("");
   const [logs, setLogs] = useState<string[]>([]);
   const { username, repoName } = useParams();
   const currUsername = session?.user?.username;
   const [repoNotFound, setRepoNotFound] = useState(false);
   const [items, setItems] = useState<Record<string, Item> | null>(null);
+  const [rootDir, setRootDir] = useState("./");
   useEffect(() => {
     if (!username || !repoName || !currUsername) return;
 
@@ -77,7 +84,104 @@ const page = () => {
         <h1 className="text-2xl font-semibold tracking-tight">{repo.name}</h1>
       </div>
       <UserRepoCard repo={repo} />
-      {items && Object.keys(items).length > 0 && <FolderTree items={items} />}
+      <div>
+        <p className="text-[15px] text-muted-foreground  mb-1">
+          Root Directory
+        </p>
+        <div className="flex gap-2">
+          <Input
+            className="mb-1"
+            value={rootDir}
+            onChange={(e) => setRootDir(e.target.value)}
+          />
+          {!editRootDirMode && (
+            <Button
+              variant="outline"
+              disabled={deployMode}
+              onClick={() => {
+                setEditRootDirMode(true);
+              }}
+            >
+              {" "}
+              <Pencil />
+            </Button>
+          )}
+        </div>
+        {editRootDirMode && items && Object.keys(items).length > 0 && (
+          <FolderTree
+            items={items}
+            setRootDir={setRootDir}
+            setEditRootDirMode={setEditRootDirMode}
+          />
+        )}
+      </div>
+      <div className="flex flex-col gap-3">
+        <p className="text-[15px] text-muted-foreground">
+          Environment Variables
+        </p>
+        <div className="rounded-lg border overflow-hidden">
+          {envVars.length > 0 && (
+            <div className="divide-y">
+              {envVars.map((env, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 px-3 py-2 bg-muted/30"
+                >
+                  <span className="w-1/3 text-sm font-mono truncate">
+                    {env.key}
+                  </span>
+                  <span className="flex-1 text-sm font-mono text-muted-foreground truncate">
+                    {"*".repeat(Math.min(env.value.length, 16))}
+                  </span>
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      setEnvVars((prev) => prev.filter((_, idx) => idx !== i))
+                    }
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    disabled={deployMode}
+                  >
+                    <X size={14} />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center gap-2 p-2">
+            <Input
+              placeholder="KEY"
+              className="font-mono text-sm h-8"
+              value={newEnvKey}
+              onChange={(e) => setNewEnvKey(e.target.value)}
+              disabled={deployMode}
+            />
+            <Input
+              placeholder="VALUE"
+              className="font-mono text-sm h-8"
+              value={newEnvValue}
+              onChange={(e) => setNewEnvValue(e.target.value)}
+              disabled={deployMode}
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 px-3 shrink-0"
+              disabled={deployMode || !newEnvKey.trim()}
+              onClick={() => {
+                if (!newEnvKey.trim()) return;
+                setEnvVars((prev) => [
+                  ...prev,
+                  { key: newEnvKey.trim(), value: newEnvValue },
+                ]);
+                setNewEnvKey("");
+                setNewEnvValue("");
+              }}
+            >
+              <Plus size={17} />
+            </Button>
+          </div>
+        </div>
+      </div>
       {!deployUrl && (
         <Button
           size="lg"
@@ -91,6 +195,8 @@ const page = () => {
               username,
               currUsername,
               token: session?.user.accessToken,
+              rootDir,
+              envVars,
             });
           }}
           disabled={deployMode}

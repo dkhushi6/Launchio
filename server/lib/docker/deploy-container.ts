@@ -5,17 +5,18 @@ import path from "path";
 import fs from "fs";
 type deployContainerPropTypes = {
   clone_url: string;
+  rootDir: string;
   token?: string;
 };
 const deployContainer = async ({
   clone_url,
+  rootDir,
   token,
 }: deployContainerPropTypes) => {
   console.log("before block");
 
   console.log("creating the cloning......");
 
-  // const sshKeyPath = path.join(process.env.HOME!, ".ssh/id_ed25519");
   const outputDir = path.join(process.cwd(), "output");
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });

@@ -7,11 +7,13 @@ import { deployDockerContainer } from "./docker/docker-deploy";
 type startDeploymentPropTypes = {
   ws: WebSocket;
   clone_url: string;
+  rootDir: string;
   token?: string;
 };
 export const startDeployment = async ({
   ws,
   clone_url,
+  rootDir,
   token,
 }: startDeploymentPropTypes) => {
   if (!clone_url) {
@@ -21,9 +23,9 @@ export const startDeployment = async ({
   let app_id;
   try {
     if (token) {
-      await deployDockerContainer({ ws, clone_url, token });
+      await deployDockerContainer({ ws, clone_url, rootDir, token });
     } else {
-      await deployDockerContainer({ ws, clone_url });
+      await deployDockerContainer({ ws, clone_url, rootDir });
     }
     ws.send(JSON.stringify({ type: "stage", value: "build_done" }));
 

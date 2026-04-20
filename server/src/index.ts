@@ -25,7 +25,7 @@ wss.on("connection", (ws) => {
       const data = JSON.parse(message.toString());
 
       if (data.type === "start") {
-        const { clone_url, token } = data;
+        const { clone_url, token, rootDir } = data;
 
         if (!clone_url) {
           console.log("clone url is null");
@@ -33,9 +33,9 @@ wss.on("connection", (ws) => {
         }
 
         if (token) {
-          startDeployment({ ws, clone_url, token });
+          startDeployment({ ws, clone_url, rootDir, token });
         } else {
-          startDeployment({ ws, clone_url });
+          startDeployment({ ws, clone_url, rootDir });
         }
       }
     } catch (err) {

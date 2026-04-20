@@ -14,6 +14,9 @@ RUN npm install -g pnpm
     git clone $AUTH_URL repo; \
   fi && \
   cd repo && \
+  if [ -n "$ROOT_DIR" ] && [ "$ROOT_DIR" != "./" ]; then \
+    cd "$ROOT_DIR"; \
+  fi && \
   pnpm install && \
   pnpm build && \
   cp -r dist /output'

@@ -9,6 +9,7 @@ type startDeploymentPropTypes = {
   username: ParamValue;
   currUsername: string | undefined;
   token?: string;
+  rootDir: string;
 };
 export const startDeployment = async ({
   setDeployMode,
@@ -18,6 +19,7 @@ export const startDeployment = async ({
   username,
   currUsername,
   token,
+  rootDir,
 }: startDeploymentPropTypes) => {
   setDeployMode(true);
   setLogs([
@@ -36,6 +38,7 @@ export const startDeployment = async ({
         type: "start",
         clone_url: repo!.clone_url,
         token: username === currUsername ? token : undefined,
+        rootDir,
       }),
     );
   };
