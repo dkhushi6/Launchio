@@ -4,6 +4,8 @@ import { WebSocketServer } from "ws";
 
 import { createServer } from "node:http";
 import getReposRoutes from "./routes/get-repos";
+import getFolderTree from "./routes/get-folder-tree";
+
 import cors from "cors";
 import { startDeployment } from "../lib/start-deployment";
 const app = express();
@@ -52,6 +54,8 @@ app.get("/", (req, res) => {
   res.send(" Backend is running successfully");
 });
 app.use("/api", getReposRoutes);
+app.use("/api", getFolderTree);
+
 server.listen(PORT, () => {
   console.log(`Launchio server running at http://localhost:${PORT}`);
 });

@@ -9,7 +9,9 @@ import BuildLogs from "@/components/hero-section/build-logs";
 import UserRepoCard from "@/components/hero-section/user-repo-card";
 import { fetchUserRepo } from "@/app/functions/fetch-user-repo";
 import { startDeployment } from "@/app/functions/start-deployment";
-import { Repo } from "@/lib/types/client-types";
+import { Item, Repo } from "@/lib/types/client-types";
+import { fetchFolderContent } from "@/app/functions/fetch-folder-content";
+import FolderTree from "@/components/folder-tree";
 
 const page = () => {
   const { data: session } = useSession();
@@ -20,6 +22,7 @@ const page = () => {
   const { username, repoName } = useParams();
   const currUsername = session?.user?.username;
   const [repoNotFound, setRepoNotFound] = useState(false);
+  const [items, setItems] = useState<Record<string, Item> | null>(null);
   useEffect(() => {
     if (!username || !repoName || !currUsername) return;
 
@@ -34,6 +37,21 @@ const page = () => {
         setRepo(data);
       } catch {
         setRepoNotFound(true);
+      }
+    })();
+    (async () => {
+      try {
+        const isOwner = username === currUsername;
+
+        const itemsInfo = await fetchFolderContent({
+          username: username as string,
+          repoName: repoName as string,
+          token: isOwner ? session?.user?.accessToken : undefined,
+        });
+        setItems(itemsInfo);
+        console.log(itemsInfo);
+      } catch {
+        console.error("fetching foldertree error");
       }
     })();
   }, [username, repoName, currUsername, session]);
@@ -58,9 +76,8 @@ const page = () => {
         </p>
         <h1 className="text-2xl font-semibold tracking-tight">{repo.name}</h1>
       </div>
-
       <UserRepoCard repo={repo} />
-
+      {items && Object.keys(items).length > 0 && <FolderTree items={items} />}
       {!deployUrl && (
         <Button
           size="lg"
@@ -88,7 +105,6 @@ const page = () => {
           )}
         </Button>
       )}
-
       {deployMode && <BuildLogs logs={logs} />}
       {deployUrl && <DeploymentSuccess deployUrl={deployUrl} />}
     </div>

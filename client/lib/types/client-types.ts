@@ -19,3 +19,7 @@ export interface Repo {
     html_url: string;
   };
 }
+export type Item = {
+  name: string;
+  children?: string[];
+};
