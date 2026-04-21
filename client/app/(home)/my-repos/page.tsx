@@ -7,10 +7,12 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import NotFound from "./not-found";
+import { LoaderCircle } from "lucide-react";
 
 const UserRepos = () => {
   const { data: session } = useSession();
   const [repos, setRepos] = useState<Repo[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const token = session?.user?.accessToken;
@@ -18,12 +20,25 @@ const UserRepos = () => {
 
     if (!token) return;
     try {
+      setLoading(true);
       getUserRepos({ username, token, setRepos });
     } catch {
       NotFound();
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   }, [session]);
-
+  if (loading) {
+    return (
+      <div className="flex h-[60vh] items-center justify-center">
+        <LoaderCircle
+          className="animate-spin text-muted-foreground"
+          size={24}
+        />
+      </div>
+    );
+  }
   return (
     <div className=" pt-5 px-6">
       <h1 className="text-3xl font-bold mb-6">Your Repositories</h1>
