@@ -67,7 +67,7 @@ const page = () => {
 
   if (!repo) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
+      <div className="flex h-[60vh] items-center max-w-7xl justify-center">
         <LoaderCircle
           className="animate-spin text-muted-foreground"
           size={24}
@@ -213,7 +213,9 @@ const page = () => {
           )}
         </Button>
       )}
-      {(deployMode || hasError || logs.length > 0) && <BuildLogs logs={logs} hasError={hasError} deployMode={deployMode} />}
+      {(deployMode || hasError || logs.length > 0) && (
+        <BuildLogs logs={logs} hasError={hasError} deployMode={deployMode} />
+      )}
       {deployUrl && <DeploymentSuccess deployUrl={deployUrl} />}
     </div>
   );

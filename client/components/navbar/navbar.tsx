@@ -1,7 +1,7 @@
 "use client";
 import { HomePath, LoginPath, MyReposPath } from "@/lib/path";
 import Link from "next/link";
-import { Triangle } from "lucide-react";
+import Logo from "../logo";
 import { Button, buttonVariants } from "../ui/button";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect } from "react";
@@ -21,72 +21,73 @@ const Navbar = () => {
     }
   }, [session]);
   return (
-    <div className="supports-backdrop-blur:bg-background/60 max-w-8xl mx-auto fixed left-0 right-0 top-0 z-20 border-b bg-background/95 backdrop-blur w-full flex py-2.5 px-5 justify-between">
-      <div>
-        <Link
-          href={HomePath()}
-          className={buttonVariants({ variant: "ghost" })}
-        >
-          <div className="flex gap-1 items-center ">
-            <Triangle size={18} fill="black" />
-            <h1 className="font-bold tracking-tight text-lg">Lauchio</h1>
-          </div>
+    <div className="fixed left-0 right-0 top-0 z-20 border-b bg-background/95 backdrop-blur supports-backdrop-blur:bg-background/60 w-full">
+      <div className=" mx-auto flex items-center justify-between py-3 px-6">
+        <Link href={HomePath()} className="flex items-center gap-2">
+          <Logo size={24} />
+          <span className="text-[13px] font-medium text-muted-foreground uppercase tracking-widest ">
+            Launchio
+          </span>
         </Link>
-      </div>
-      <div className="flex gap-2">
-        <ThemeSwitcher />{" "}
-        {!session?.user ? (
-          <Link
-            href={LoginPath()}
-            className={buttonVariants({ variant: "default" })}
-          >
-            <div className="flex gap-1 items-center ">
-              <h1 className="font-semibold tracking-tight text-lg">Login</h1>
-            </div>
-          </Link>
-        ) : (
-          <div className="flex gap-2">
+
+        <div className="flex items-center gap-3">
+          <ThemeSwitcher />
+          {!session?.user ? (
             <Link
-              href={MyReposPath()}
-              className={buttonVariants({ variant: "outline" })}
+              href={LoginPath()}
+              className={buttonVariants({ variant: "default", size: "sm" })}
             >
-              MyRepos
+              Sign in
             </Link>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <button className="flex items-center gap-2 cursor-pointer  ">
+          ) : (
+            <>
+              <Link
+                href={MyReposPath()}
+                className={buttonVariants({ variant: "ghost", size: "sm" })}
+              >
+                My Repos
+              </Link>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <button className="cursor-pointer">
+                    <Image
+                      alt="user-image"
+                      src={session.user?.image || "/default.jpg"}
+                      width={32}
+                      height={32}
+                      className="rounded-full border"
+                    />
+                  </button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-48 p-4 flex flex-col items-center gap-3 text-center">
                   <Image
                     alt="user-image"
                     src={session.user?.image || "/default.jpg"}
-                    width={36}
-                    height={36}
-                    className="rounded-full border-2"
+                    width={44}
+                    height={44}
+                    className="rounded-full border"
                   />
-                </button>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-48 p-4 flex flex-col items-center gap-3 text-center">
-                <Image
-                  alt="user-image"
-                  src={session.user?.image || "/default.jpg"}
-                  width={48}
-                  height={48}
-                  className="rounded-full border"
-                />
-                <p className="text-sm font-semibold">{session.user?.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  {session.user?.email}
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => signOut()}
-                >
-                  Log Out
-                </Button>
-              </HoverCardContent>
-            </HoverCard>
-          </div>
-        )}
+                  <div>
+                    <p className="text-sm font-semibold">
+                      {session.user?.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {session.user?.email}
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => signOut()}
+                  >
+                    Sign out
+                  </Button>
+                </HoverCardContent>
+              </HoverCard>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ const UserRepos = () => {
   }, [session]);
   if (loading) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
+      <div className="flex h-[60vh] max-w-7xl items-center justify-center">
         <LoaderCircle
           className="animate-spin text-muted-foreground"
           size={24}
@@ -44,7 +44,7 @@ const UserRepos = () => {
     );
   }
   return (
-    <div className=" pt-5 px-6">
+    <div className="max-w-7xl mx-auto pt-5 px-6">
       <h1 className="text-3xl font-bold mb-6">Your Repositories</h1>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

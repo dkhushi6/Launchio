@@ -35,7 +35,7 @@ export default function RootLayout({
           <SessionWrapper>
             <Navbar />
 
-            <main className="mt-15 max-w-7xl mx-auto">{children}</main>
+            <main className="mt-15  mx-auto">{children}</main>
             <Toaster />
           </SessionWrapper>
         </ThemeProvider>
