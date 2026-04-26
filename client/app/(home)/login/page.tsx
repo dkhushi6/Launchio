@@ -1,16 +1,12 @@
 "use client";
 import { Button } from "../../../components/ui/button";
-import React, { useEffect } from "react";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
 
 const page = () => {
-  useEffect(() => {
-    console.log("ENV CHECK:", {
-      GITHUB_ID: process.env.GITHUB_ID,
-      GITHUB_SECRET: process.env.GITHUB_SECRET,
-      AUTH_SECRET: process.env.AUTH_SECRET,
-    });
-  });
+  const [loading, setLoading] = useState(false);
+
   return (
     <div className=" flex justify-center items-center h-screen ">
       <div className=" border rounded-lg flex px-5 py-8">
@@ -24,11 +20,16 @@ const page = () => {
               <Button
                 className="flex gap-3 w-[50vh] "
                 variant="outline"
+                disabled={loading}
                 onClick={() => {
+                  setLoading(true);
                   signIn("github", { callbackUrl: "/" });
                 }}
               >
-                <div className="flex gap-3 items-center">Github</div>
+                <div className="flex gap-3 items-center">
+                  {loading && <LoaderCircle className="animate-spin" size={16} />}
+                  Github
+                </div>
               </Button>
             </div>
           </div>

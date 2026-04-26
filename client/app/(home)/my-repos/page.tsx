@@ -19,15 +19,19 @@ const UserRepos = () => {
     const username = session?.user?.username;
 
     if (!token) return;
-    try {
-      setLoading(true);
-      getUserRepos({ username, token, setRepos });
-    } catch {
-      NotFound();
-      setLoading(false);
-    } finally {
-      setLoading(false);
-    }
+
+    const fetchRepos = async () => {
+      try {
+        setLoading(true);
+        await getUserRepos({ username, token, setRepos });
+      } catch {
+        NotFound();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRepos();
   }, [session]);
   if (loading) {
     return (

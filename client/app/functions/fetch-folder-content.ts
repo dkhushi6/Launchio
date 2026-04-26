@@ -10,11 +10,14 @@ export const fetchFolderContent = async ({
   token,
 }: fetchFolderContentPropType) => {
   try {
-    const res = await axios.post("http://localhost:8080/api/get-folder-tree", {
-      username,
-      repoName,
-      token: token ?? null,
-    });
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_HOST_URL}/api/get-folder-tree`,
+      {
+        username,
+        repoName,
+        token: token ?? null,
+      },
+    );
     return res.data.results;
   } catch (error) {
     console.error("error fetching folder tree");
