@@ -63,15 +63,15 @@ export const deployDockerContainer = ({
     });
 
     child.stderr.on("data", (data: WSMessage) => {
-      const errors = data.toString().split("\n");
+      const lines = data.toString().split("\n");
 
-      errors.forEach((err) => {
-        if (!err.trim()) return;
-        console.error("[docker stderr]", err);
+      lines.forEach((line) => {
+        if (!line.trim()) return;
+        console.error("[docker stderr]", line);
         ws.send(
           JSON.stringify({
-            type: "error",
-            message: err,
+            type: "log",
+            message: line,
           }),
         );
       });
@@ -80,7 +80,10 @@ export const deployDockerContainer = ({
       console.log("Process finished:", code);
 
       if (code === 0) resolve();
-      else reject(new Error("Docker build failed"));
+      else {
+        ws.send(JSON.stringify({ type: "error", message: "Docker build failed with exit code " + code }));
+        reject(new Error("Docker build failed"));
+      }
     });
   });
 };

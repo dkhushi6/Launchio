@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar/navbar";
 import SessionWrapper from "@/components/session/session-wrapper";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,9 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SessionWrapper>
             <Navbar />
+
             <main className="mt-15 max-w-7xl mx-auto">{children}</main>
+            <Toaster />
           </SessionWrapper>
         </ThemeProvider>
       </body>

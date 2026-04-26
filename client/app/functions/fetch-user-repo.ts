@@ -1,5 +1,6 @@
 import { Repo } from "@/lib/types/client-types";
 import axios from "axios";
+import { toast } from "sonner";
 type fetchUserRepoPropTypes = {
   username: string;
   currUsername: string;
@@ -19,6 +20,9 @@ export const fetchUserRepo = async ({
     isOwner ? { username, repoName, token } : { username, repoName },
   );
 
-  if (!res.data.repo) throw new Error("Repo not found");
+  if (!res.data.repo) {
+    toast.error("Repository not found");
+    throw new Error("Repo not found");
+  }
   return res.data.repo;
 };

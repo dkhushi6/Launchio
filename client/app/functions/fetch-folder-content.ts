@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "sonner";
 type fetchFolderContentPropType = {
   username: string;
   repoName: string;
@@ -21,6 +22,7 @@ export const fetchFolderContent = async ({
     return res.data.results;
   } catch (error) {
     console.error("error fetching folder tree");
+    toast.error("Could not load folder tree");
     throw error;
   }
 };

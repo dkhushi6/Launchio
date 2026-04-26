@@ -23,7 +23,8 @@ export const handleSearch = async ({
         repoName: query,
       },
     );
-    setRepos(res.data.results);
-    console.log("repos are", res.data.results);
+    const results: Repo[] = res.data.results;
+    setRepos(results);
+    return results;
   }
 };

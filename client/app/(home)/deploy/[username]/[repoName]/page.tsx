@@ -24,6 +24,7 @@ const page = () => {
   const [newEnvValue, setNewEnvValue] = useState("");
 
   const [deployUrl, setDeployUrl] = useState("");
+  const [hasError, setHasError] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const { username, repoName } = useParams();
   const currUsername = session?.user?.username;
@@ -191,6 +192,7 @@ const page = () => {
               setDeployMode,
               setLogs,
               setDeployUrl,
+              setHasError,
               repo,
               username,
               currUsername,
@@ -211,7 +213,7 @@ const page = () => {
           )}
         </Button>
       )}
-      {deployMode && <BuildLogs logs={logs} />}
+      {(deployMode || hasError || logs.length > 0) && <BuildLogs logs={logs} hasError={hasError} deployMode={deployMode} />}
       {deployUrl && <DeploymentSuccess deployUrl={deployUrl} />}
     </div>
   );

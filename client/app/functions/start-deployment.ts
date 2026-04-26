@@ -1,10 +1,12 @@
 import { EnvVarType, Repo } from "@/lib/types/client-types";
 import { ParamValue } from "next/dist/server/request/params";
+import { toast } from "sonner";
 
 type startDeploymentPropTypes = {
   setDeployMode: React.Dispatch<React.SetStateAction<boolean>>;
   setLogs: React.Dispatch<React.SetStateAction<string[]>>;
   setDeployUrl: React.Dispatch<React.SetStateAction<string>>;
+  setHasError: React.Dispatch<React.SetStateAction<boolean>>;
   repo: Repo;
   username: ParamValue;
   currUsername: string | undefined;
@@ -16,6 +18,7 @@ export const startDeployment = async ({
   setDeployMode,
   setLogs,
   setDeployUrl,
+  setHasError,
   repo,
   username,
   currUsername,
@@ -53,7 +56,10 @@ export const startDeployment = async ({
     }
 
     if (data.type === "error") {
+      toast.error(`Deployment error`);
       setLogs((prev) => [...prev, `ERROR: ${data.message}`]);
+      setHasError(true);
+      setDeployMode(false);
     }
 
     if (data.type === "hosted_url") {

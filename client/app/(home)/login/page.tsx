@@ -27,7 +27,9 @@ const page = () => {
                 }}
               >
                 <div className="flex gap-3 items-center">
-                  {loading && <LoaderCircle className="animate-spin" size={16} />}
+                  {loading && (
+                    <LoaderCircle className="animate-spin" size={16} />
+                  )}
                   Github
                 </div>
               </Button>

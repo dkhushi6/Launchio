@@ -1,5 +1,6 @@
 import { Repo } from "@/lib/types/client-types";
 import axios from "axios";
+import { toast } from "sonner";
 type getUserReposPropsTypes = {
   username: string | undefined;
   token: string;
@@ -20,6 +21,8 @@ export const getUserRepos = async ({
     );
     setRepos(res.data.repos);
   } catch {
+    toast.error("Repository not found");
+
     throw new Error("Repos not found");
   }
 };
